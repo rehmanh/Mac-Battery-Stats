@@ -18,6 +18,8 @@ stats.each_line do |m|
 	end
 end
 
+puts "test"
+
 # today = stats.scan(/#{date}/)
 
 # puts today.to_s
