@@ -13,9 +13,9 @@ cmd = `touch .stats ; chmod u+x .stats ; pmset -g log | grep Using > .stats`
 stats = File.read(".stats")
 
 stats.each_line do |m|
-	if m =~ /#{date}/ 
-		puts m
-	end
+  if m =~ /#{date}/ 
+    puts m
+  end
 end
 
 puts "test"
