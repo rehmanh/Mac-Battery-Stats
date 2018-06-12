@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+
+require 'time'
+
+year = Time.now.year
+month = '%02d' % Time.now.month
+day = '%02d' % Time.now.day
+
+date = [year, month, day].join('-')
+
+cmd = `touch .stats ; chmod u+x .stats ; pmset -g log | grep Using > .stats`
+
+stats = File.read(".stats")
+
+stats.each_line do |m|
+	if m =~ /#{date}/ 
+		puts m
+	end
+end
+
+# today = stats.scan(/#{date}/)
+
+# puts today.to_s
+
+# puts date
+
+# stats = File.readlines(".stats")
+
+#puts "#{year}-#{month}-#{day}"
+
+# cmd = `touch .stats ; chmod u+x .stats ; pmset -g log | grep Using > .stats`
+
+# stats = File.readlines(".stats")
+
+# today = stats.scan(//)
+
+######################################
+
+#cmd = `touch .stats ; chmod u+x .stats ; pmset -g log | grep Using | tail -n 1 > .stats`
+
+#info = File.read(".stats")
+
+#ans = (Time.parse(Time.new.to_s) - Time.parse(info.to_s)) / 60
+
+#puts ans
