@@ -1,24 +1,40 @@
 #!/usr/bin/env ruby
 
-require 'time'
+require 'Time'
 
-year = Time.now.year
-month = '%02d' % Time.now.month
-day = '%02d' % Time.now.day
-
-date = [year, month, day].join('-')
-
-cmd = `touch .stats ; chmod u+x .stats ; pmset -g log | grep Using > .stats`
+cmd = `pmset -g log | grep "Using" | grep "$(date "+%Y-%m-%d")" | grep -w "Wake" > .stats`
 
 stats = File.read(".stats")
 
-stats.each_line do |m|
-  if m =~ /#{date}/ 
-    puts m
-  end
-end
+screen_on_since = stats.scan(/\d{2}:\d{2}:\d{2}/).join("") # string
 
-puts "test"
+time_now = Time.now 
+
+time_obj = Time.parse(screen_on_since)
+
+delta_time = time_now - time_obj
+
+puts delta_time
+
+# year = Time.now.year
+# month = '%02d' % Time.now.month
+# day = '%02d' % Time.now.day
+
+# date = [year, month, day].join('-') # date "+%Y-%m-%d" for date from CL
+
+# cmd = `touch .stats ; chmod u+x .stats ; pmset -g log | grep Using > .stats`
+
+# stats = File.read(".stats")
+
+# pmset -g log | grep "Using" | grep "$(date "+%Y-%m-%d")" | grep -w "Wake" > .stats
+
+#stats.each_line do |m|
+#  if m =~ /#{date}/ 
+#    puts m
+#  end
+#end
+#
+#puts "test"
 
 # today = stats.scan(/#{date}/)
 
