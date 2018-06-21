@@ -2,62 +2,23 @@
 
 require 'Time'
 
-cmd = `pmset -g log | grep "Using" | grep "$(date "+%Y-%m-%d")" | grep -w "Wake" > .stats`
+if ARGV[0].to_s.match(/-s/)
+  cmd = `pmset -g log | grep "Using" | grep "$(date "+%Y-%m-%d")" | grep -w "Wake" > .stats`
+  stats = File.read(".stats")
+  screen_on_since = stats.scan(/\d{2}:\d{2}:\d{2}/).join("") # string 
+  time_now = Time.now 
+  time_obj = Time.parse(screen_on_since)
+  delta_time = time_now.to_i - time_obj.to_i
+  puts "#{delta_time} seconds"
+else
+  puts "Usage: ./screenOnTime <options>\nSee https://www.github.com/rehmanh/MacBook-Battery-Stats for more details."
+end
 
-stats = File.read(".stats")
 
-screen_on_since = stats.scan(/\d{2}:\d{2}:\d{2}/).join("") # string
-
-time_now = Time.now 
-
-time_obj = Time.parse(screen_on_since)
-
-delta_time = time_now - time_obj
-
-puts delta_time
-
-# year = Time.now.year
-# month = '%02d' % Time.now.month
-# day = '%02d' % Time.now.day
-
-# date = [year, month, day].join('-') # date "+%Y-%m-%d" for date from CL
-
-# cmd = `touch .stats ; chmod u+x .stats ; pmset -g log | grep Using > .stats`
-
-# stats = File.read(".stats")
-
-# pmset -g log | grep "Using" | grep "$(date "+%Y-%m-%d")" | grep -w "Wake" > .stats
-
-#stats.each_line do |m|
-#  if m =~ /#{date}/ 
-#    puts m
-#  end
-#end
-#
-#puts "test"
-
-# today = stats.scan(/#{date}/)
-
-# puts today.to_s
-
-# puts date
-
-# stats = File.readlines(".stats")
-
-#puts "#{year}-#{month}-#{day}"
-
-# cmd = `touch .stats ; chmod u+x .stats ; pmset -g log | grep Using > .stats`
-
-# stats = File.readlines(".stats")
-
-# today = stats.scan(//)
-
-######################################
-
-#cmd = `touch .stats ; chmod u+x .stats ; pmset -g log | grep Using | tail -n 1 > .stats`
-
-#info = File.read(".stats")
-
-#ans = (Time.parse(Time.new.to_s) - Time.parse(info.to_s)) / 60
-
-#puts ans
+=begin
+year = Time.now.year
+month = '%02d' % Time.now.month
+day = '%02d' % Time.now.day
+pmset -g log | grep "Using" | grep "$(date "+%Y-%m-%d")" | grep -w "Wake" > .stats
+cmd = `touch .stats ; chmod u+x .stats ; pmset -g log | grep Using | tail -n 1 > .stats`
+=end

@@ -9,16 +9,19 @@ So far, I am using Darwin logfiles of the battery, so this script isn't compatib
 
 ---
 
-#### Progress 06/20/2018
+#### Progress 06/21/2018
 
-Able to execute embedded CL script in Ruby to perform a search for time since last wake.
+Created options to be passed to the script via arguments. 
 
-Can get time spent since last wake.
+So far, only one argument <-s> – to have the number of secomnds passed since last wake.
 
 ---
 
 #### Issues / TODO
 
 - need to account for date change over midnight of same wake cycle
-- need to provide options for usage since last 24 hours, last wake, whether Mac was plugged in or not.
-- provide stats from last time machine was at 100% charge
+- need to provide options for:
+  1. usage since last wake
+  2. usage all day
+  3. usage since 100% charge
+  4. usage in HHMMSS
