@@ -9,19 +9,20 @@ So far, I am using Darwin logfiles of the battery, so this script isn't compatib
 
 ---
 
-#### Progress 06/21/2018
+#### Progress 
 
-Created options to be passed to the script via arguments. 
-
-So far, only one argument <-s> – to have the number of secomnds passed since last wake.
+###### 06/21/2018
+- Created options to be passed to the script via arguments. 
+- So far, only one argument <-s> – to have the number of secomnds passed since last wake.
 
 ---
 
-#### Issues / TODO
+#### Issues / Notes
 
+- [Apple defines "Charged" status as being anything over 95%](https://developer.apple.com/documentation/iokit/kiopsischargedkey?language=objc) 
+- logfiles also include "Display is turned on/off" option
 - need to account for date change over midnight of same wake cycle
 - need to provide options for:
   1. usage since last wake
   2. usage all day
   3. usage since 100% charge
-  4. usage in HHMMSS
