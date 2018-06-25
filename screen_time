@@ -21,7 +21,8 @@ def program_usage_info
 end
 
 if ARGV[0].to_s.match(/-r/)
-  cmd = `pmset -g log | grep "Display is turned on" | grep "$(date "+%Y-%m-%d")" | tail -1 > .stats`
+  # cmd = `pmset -g log | grep "Display is turned on" | grep "$(date "+%Y-%m-%d")" | tail -1 > .stats` # with date
+  cmd = `pmset -g log | grep "Display is turned on" | tail -1 > .stats`
   stats = File.read(".stats")
   screen_on_since = stats.scan(/\d{2}:\d{2}:\d{2}/).join("") # string 
   time_now = Time.now 
