@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+
+require 'Time'
+require 'open3'
+
+def has_battery? 
+  stdout, stderr, status = Open3.capture3("sysctl hw.model")
+  !!(stdout !~ /(Macmini|MacPro|iMac|iMacPro)/)
+end
+
+def program_usage_info
+  puts "About:"
+  puts "  Android-style screen usage information for your Mac.\n\n"
+  puts "Usage:"
+  puts "  ./screen_time <options>"
+  puts "  See https://github.com/rehmanh/Mac-Battery-Stats for more information\n\n"
+  puts "Options:"
+  puts "  -r: Screen usage time from most recent wake / boot"
+  puts "  -d: Screen usage time since past 24 hours"
+  puts "  -A: Screen usage time since last time machine was at 100% charge (not valid for machines without battery)"
+end
+
+if ARGV[0].to_s.match(/-r/)
+  cmd = `pmset -g log | grep "Display is turned on" | grep "$(date "+%Y-%m-%d")" | tail -1 > .stats`
+  stats = File.read(".stats")
+  screen_on_since = stats.scan(/\d{2}:\d{2}:\d{2}/).join("") # string 
+  time_now = Time.now 
+  time_obj = Time.parse(screen_on_since)
+  delta_time = time_now.to_i - time_obj.to_i
+  puts "Time since last wake\nHH:MM:SS"
+  puts Time.at(delta_time).utc.strftime("%H:%M:%S")
+elsif ARGV[0].to_s.match(/-d/)
+  cmd = `pmset -g log | grep "Display is turned on" | grep "$(date "+%Y-%m-%d")" | tail -5 > .stats`
+  stats = File.read(".stats")
+  on_ar = stats.scan(/\d{2}:\d{2}:\d{2}/)
+  print on_ar
+else
+  program_usage_info
+end
+
+if __FILE__ == $0
+  if has_battery? 
+  else
+  end
+end
+
+
+
+# cmd = `pmset -g log | grep "Using" | grep "$(date "+%Y-%m-%d")" | grep -w "Wake" | tail -1 > .stats`
