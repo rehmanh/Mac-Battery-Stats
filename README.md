@@ -3,18 +3,25 @@
 
 #### About
 
-This script is intended to provide information about screen usage of your Mac throughout the day. The idea is to have a functional log of the time spent while the Mac is awake. This would be similar to the way that Android OS provides screen usage stats throughout the day.
+This script provides output for the time a user spends at their Mac with the screen actively turned on. The inspiration for this came from the Android (AOSP) OS with its built-in functionality to rovide the user with the time they spend looking at the screen at a given charge cycle.
 
-Utilizes the Darwin logfiles for battery and display usage statistics to calculate screen usage, for those interested in such information.
+The script utilizes the Darwin logfiles for battery and display usage information to calculate screen usage, for those interested in such statistics.
+
+---
+
+#### Usage
+
+I do not know how to package this script such that you can download it (yet)... more to come.
 
 ---
 
 #### Progress 
 
-###### 06/25/2018
-- Date change overnight resets the log, need to assume that if logfile is empty then the user has used machine into new date
-- Started providing options
-- Maybe think about providing date options... eh
+###### 06/26/2018
+- Completed the today option for retreiving screen time for today's date. 
+- Need to test for when screen if used through the night into the next day, and then turned off.
+- Need to refactor code, __real bad__.
+- 
 
 ---
 
