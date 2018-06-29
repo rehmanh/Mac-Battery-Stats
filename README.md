@@ -30,9 +30,9 @@ This script provides information for the time spent at your Mac with the screen 
 `screen_time <options>` from any directory if the PATH is exported (see installation instructions above).
 
 ###### Options:
-`-r` : to get screen-time since most recent wake / boot
-`-d` : to get screen-time of current date
-`-A` : to get scree-time since device was last fully charged (for Macs with batteries)
+- `-r` : to get screen-time since most recent wake / boot
+- `-d` : to get screen-time of current date
+- `-A` : to get scree-time since device was last fully charged (for Macs with batteries)
 
 ---
 
