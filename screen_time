@@ -4,7 +4,7 @@ require 'Time'
 require 'Date'
 require 'open3'
 
-def has_battery? 
+def has_battery?
   stdout, stderr, status = Open3.capture3("sysctl hw.model")
   !!(stdout !~ /(Macmini|MacPro|iMac|iMacPro)/)
 end
@@ -14,73 +14,79 @@ def program_usage_info
   puts "  Android-style screen usage information for your Mac.\n\n"
   puts "Usage:"
   puts "  ./screen_time <options>"
-  puts "  See https://github.com/rehmanh/Mac-Battery-Stats for more information\n\n"
+  puts "  See https://github.com/rehmanh/Mac-Battery-Stats for more information.\n\n"
   puts "Options:"
-  puts "  -r: Screen usage time from most recent wake / boot"
-  puts "  -d: Screen usage time since today's date"
-  puts "  -A: Screen usage time since last time machine was at 100% charge (for machines with battery)"
+  puts "  -r: Screen usage time from most recent wake / boot."
+  puts "  -d: Screen usage time since today's date."
+  puts "  -A: Screen usage time since last time machine was at 100% charge (for machines with battery)."
 end
 
 if __FILE__ == $0
   if ARGV[0].to_s.match(/-r/)
-    
+
     cmd = `pmset -g log | grep "Display is turned on" | tail -1 > .stats`
     stats = File.read(".stats")
-    screen_on_since = stats.scan(/\d{2}:\d{2}:\d{2}/).join("") # string 
-    time_now = Time.now 
-    time_obj = Time.parse(screen_on_since)
-    delta_time = time_now.to_i - time_obj.to_i
-    puts "Screen time since last wake\nHH:MM:SS"
+    screen_on_since = stats.scan(/\d{2}:\d{2}:\d{2}/).join("") 
+    delta_time = Time.now.to_i - Time.parse(screen_on_since).to_i
+    puts "Screen time since last wake\nHH:MM:SS:"
     puts Time.at(delta_time).utc.strftime("%H:%M:%S")
 
   elsif ARGV[0].to_s.match(/-d/)
 
     cmd = `pmset -g log | grep "Display is turned" | grep "$(date "+%Y-%m-%d")" | tail -r > .stats`
     stats = File.read(".stats")
-    time_array = stats.scan(/\d{2}:\d{2}:\d{2}/)
-    time_array = time_array.map { |m| Time.parse(m) }
-    on_array = Array.new
-    off_array = Array.new
-    
-    time_array.each.with_index do |m, i|
-      if i % 2 == 0 # on
-        on_array << m
-      else
-        off_array << m
+
+    if stats.empty? # user now in date + 1 ; print on time since midnight
+      delta_time = Time.now.to_i - Time.parse(Date.today.ctime).to_i
+      puts "Screen time for Today, #{Date.today}\nHH:MM:SS"
+      puts Time.at(delta_time).utc.strftime("%H:%M:%S")
+    else
+      time_array = stats.scan(/\d{2}:\d{2}:\d{2}/)
+      time_array = time_array.map { |m| Time.parse(m) }
+      on_array = Array.new
+      off_array = Array.new
+
+      time_array.each.with_index do |m, i|
+        if i % 2 == 0 
+          on_array << m
+        else
+          off_array << m
+        end
       end
+
+      # handle time from "last night"
+      if off_array.length == on_array.length
+        extra_time = off_array.at(-1)
+        off_array.delete_at(-1)
+      end
+
+      most_recent = on_array.at(0)
+      on_array.delete_at(0)
+
+      results = Array.new
+      on_array.each.with_index do |m, i|
+        results << off_array.at(i) - m
+      end
+
+      time_sum = 0
+      results.each do |val|
+        time_sum += val.to_i
+      end
+
+      delta_time = Time.now.to_i - most_recent.to_i
+      time_sum += delta_time
+
+      puts "Screen time for Today, #{Date.today}\nHH:MM:SS:"
+      puts Time.at(time_sum).utc.strftime("%H:%M:%S")
+
     end
-
-    # handle time from "last night"
-    if off_array.length == on_array.length
-      extra_time = off_array.at(-1)
-      off_array.delete_at(-1)
-    end
-
-    most_recent = on_array.at(0)
-    on_array.delete_at(0)
-
-    results = Array.new
-    on_array.each.with_index do |m, i|
-      results << off_array.at(i) - m
-    end
-    
-    time_sum = 0
-    results.each do |val|
-      time_sum += val.to_i
-    end
-
-    delta_time = Time.now.to_i - most_recent.to_i
-    time_sum += delta_time
-
-    puts "Screen time for Today, #{Date.today}\nHH:MM:SS"
-    puts Time.at(time_sum).utc.strftime("%H:%M:%S")
 
   elsif ARGV[0].to_s.match(/-A/)
     if has_battery?
       cmd = `pmset -g log | grep "Using"`
-      puts "Under construction. Please try again." 
+      puts "Under construction. Please try again."
     else
-      puts "This device doesn't support a battery. Please re-run the program with a different option." 
+      puts "This device doesn't support a battery. Please re-run the program with a different option."
     end
   else
     program_usage_info
